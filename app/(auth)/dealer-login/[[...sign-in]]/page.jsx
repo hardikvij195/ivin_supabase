@@ -78,6 +78,7 @@ const Signin = () => {
 
     localStorage.setItem("userRole", profile.role || "");
     localStorage.setItem("userFullName", profile.full_name || "");
+    localStorage.setItem("avatarUrl",profile.avatar_url || "" );
   }
 
   router.push("/callback");

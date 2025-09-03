@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { supabaseBrowser } from "@/lib/supabaseBrowser"; // ✅ adjust path if needed
+import { supabaseBrowser } from "@/lib/supabaseBrowser";
 
 const navbarItems = [
   { name: "Home", href: "/" },
@@ -23,6 +23,14 @@ export default function Navbar() {
   const router = useRouter();
 
   useEffect(() => {
+    // 1. Load cached profile from localStorage immediately
+    const cachedFullName = localStorage.getItem("userFullName");
+    const cachedAvatar = localStorage.getItem("avatarUrl");
+
+    if (cachedFullName) setFullName(cachedFullName);
+    if (cachedAvatar) setAvatarUrl(cachedAvatar);
+
+    // 2. Fetch fresh profile from Supabase in background
     const fetchProfile = async () => {
       const {
         data: { session },
@@ -30,20 +38,20 @@ export default function Navbar() {
 
       if (!session?.user) return;
 
-      // fetch profile from DB
       const { data: profile, error } = await supabaseBrowser
         .from("profiles")
         .select("full_name, avatar_url")
         .eq("id", session.user.id)
         .maybeSingle();
 
-      if (error) {
-        console.error("Error fetching profile:", error);
-        return;
-      }
+      if (!error && profile) {
+        setFullName(profile.full_name || cachedFullName);
+        setAvatarUrl(profile.avatar_url || cachedAvatar);
 
-      if (profile?.full_name) setFullName(profile.full_name);
-      if (profile?.avatar_url) setAvatarUrl(profile.avatar_url);
+        // Update cache
+        localStorage.setItem("userFullName", profile.full_name || "");
+        localStorage.setItem("avatarUrl", profile.avatar_url || "");
+      }
     };
 
     fetchProfile();
@@ -126,7 +134,7 @@ export default function Navbar() {
               {avatarUrl ? (
                 <Image
                   src={avatarUrl}
-                  alt="user avatar"
+                  alt=""
                   width={32}
                   height={32}
                   className="rounded-full border border-white"
