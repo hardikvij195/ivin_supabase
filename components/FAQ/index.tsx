@@ -3,13 +3,13 @@ import QuestionAnswer from "./question-answer";
 
 const faqData = [
     {
-      question: "What is an iVin Report?",
+      question: "What is an vinX Report?",
       answer:
-        "An iVin Report is a comprehensive vehicle history report that helps you make smarter buying or selling decisions...",
+        "An vinX Report is a comprehensive vehicle history report that helps you make smarter buying or selling decisions...",
     },
     {
-      question: "Is the iVin Report free?",
-      answer: "The iVin Report may have free and paid versions depending on the details you need.",
+      question: "Is the vinX Report free?",
+      answer: "The vinX Report may have free and paid versions depending on the details you need.",
     },
   ];
 

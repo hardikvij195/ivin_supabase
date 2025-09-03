@@ -50,7 +50,7 @@ export default function Features() {
         </div>
 
         <p className="text-[30px] lg:text-[40px] font-fredoka font-semibold text-center">
-          What’s Inside an <span className="text-primary">iVin </span> Report?
+          What’s Inside an <span className="text-primary">vinX </span> Report?
         </p>
       </div>
 

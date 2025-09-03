@@ -4,46 +4,67 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import DashboardCard from "@/app/dashboard/_components/dashboard-cards";
 import { supabaseBrowser } from "@/lib/supabaseBrowser";
-import { Skeleton } from "@/components/ui/skeleton"; // adjust path if different
-
-const cardData = [
-  {
-    icon: "/dashboard/table-car.svg",
-    title: "Total Car Reports Generated",
-    value: 1856,
-    linkText: "View Details",
-  },
-  {
-    icon: "/dashboard/money-bag.svg",
-    title: "Total Charges Till Now",
-    value: "$256.00",
-    linkText: "View Details",
-  },
-];
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Dashboard() {
   const [fullName, setFullName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [totalReports, setTotalReports] = useState<number>(0);
+  const [totalCharges, setTotalCharges] = useState<number>(0);
 
   useEffect(() => {
-    const getUser = async () => {
-      const {
-        data: { user },
-      } = await supabaseBrowser.auth.getUser();
+    const getDashboardData = async () => {
+      try {
+        const {
+          data: { user },
+        } = await supabaseBrowser.auth.getUser();
 
-      if (user) {
+        if (!user) {
+          setLoading(false);
+          return;
+        }
+
         const name =
           user.user_metadata?.full_name || user.user_metadata?.name || null;
         setFullName(name);
+
+        const { count, error: countError } = await supabaseBrowser
+          .from("carfax_reports")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id);
+
+        if (countError) {
+          console.error("Error fetching total reports:", countError);
+        } else {
+          setTotalReports(count ?? 0);
+        }
+
+
+        const { data: reports, error: sumError } = await supabaseBrowser
+          .from("carfax_reports")
+          .select("amount")
+          .eq("user_id", user.id);
+
+        if (sumError) {
+          console.error("Error fetching charges:", sumError);
+        } else {
+          const total = (reports ?? []).reduce(
+            (acc, r) => acc + (parseFloat(r.amount) || 0),
+            0
+          );
+          setTotalCharges(total);
+        }
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    getUser();
+    getDashboardData();
   }, []);
 
   if (loading) {
-    // Full page skeleton
     return (
       <div className="flex flex-col gap-5 mt-5">
         <Skeleton className="h-7 w-48" />
@@ -54,6 +75,23 @@ export default function Dashboard() {
       </div>
     );
   }
+
+  const cardData = [
+    {
+      icon: "/dashboard/table-car.svg",
+      title: "Total Car Reports Generated",
+      value: totalReports,
+      linkText: "View Details",
+      linkHref: "/dashboard/reports-list-generated", 
+    },
+    {
+      icon: "/dashboard/money-bag.svg",
+      title: "Total Charges Till Now",
+      value: `$${totalCharges.toFixed(2)}`,
+      linkText: "View Details",
+       linkHref: "/dashboard/payments",
+    },
+  ];
 
   return (
     <div className="flex flex-col gap-5 mt-4">
@@ -76,8 +114,12 @@ export default function Dashboard() {
             title={card.title}
             value={card.value}
             linkText={card.linkText}
+             linkHref={card.linkHref}
+            
           />
+          
         ))}
+        
       </div>
     </div>
   );

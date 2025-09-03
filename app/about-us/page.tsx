@@ -12,7 +12,7 @@ export default function Page() {
       <Hero />
       <Story/>
       <MissionValues/>
-      <PeoplePurpose/>
+      {/*<PeoplePurpose/>*/}
       <Footer />
 
     </>

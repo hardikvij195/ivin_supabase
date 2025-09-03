@@ -16,7 +16,7 @@ const Signin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Check if user is already logged in
+
   useEffect(() => {
     const checkUser = async () => {
       const { data, error } = await supabaseBrowser.auth.getUser();
@@ -39,27 +39,51 @@ const Signin = () => {
   }, [router]);
 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { data, error } = await supabaseBrowser.auth.signInWithPassword({
-      email,
-      password,
-    });
-    console.log(data, error);
-    await supabaseBrowser
-      .from("users")
-      .update({
-        updated_at: new Date().toISOString(), // e.g., "2025-07-05T15:41:23.123Z"
-      })
-      .eq("id", data?.user?.id)
-      .select()
-      .single();
-    if (error) {
-      setError(error.message);
-    } else {
-      router.push("/callback");
-    }
-  };
+ const handleSubmit = async () => {
+  e.preventDefault();
+  setError(""); 
+
+  const { data, error } = await supabaseBrowser.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    setError(error.message);
+    return;
+  }
+
+  const user = data?.user;
+  if (!user) {
+    setError("Login failed. No user returned.");
+    return;
+  }
+
+  await supabaseBrowser
+    .from("users")
+    .update({
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", user.id);
+
+  const { data: profile, error: profileError } = await supabaseBrowser
+    .from("profiles")
+    .select("role, full_name")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError) {
+    console.error("Error fetching profile:", profileError);
+  } else if (profile) {
+
+    localStorage.setItem("userRole", profile.role || "");
+    localStorage.setItem("userFullName", profile.full_name || "");
+  }
+
+  router.push("/callback");
+};
+
+
   const handleGoogleSignIn = async () => {
     try {
       const { data, error } = await supabaseBrowser.auth.signInWithOAuth({
@@ -91,7 +115,7 @@ const Signin = () => {
 
   return (
    
-    <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen px-4 gap-10 bg-white lg:mx-20">
+    <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen px-4 gap-10  lg:mx-20">
      
 
       <div className="hidden w-[40%] lg:block md:block relative">

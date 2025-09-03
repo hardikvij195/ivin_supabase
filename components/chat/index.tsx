@@ -1,6 +1,6 @@
 import ConversationDetails from "./conversation-details";
 import ConversationSidebar from "./conversation-sidebar";
-import SidebarMessage from "./sidebar-message";
+
 
 export default function Chat() {
   return (

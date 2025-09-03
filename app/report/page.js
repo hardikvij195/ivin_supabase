@@ -629,7 +629,7 @@ function InfoDot({ text }) {
 }
 
 // --- the table component ---
-export function AccidentTable({ groups = [] }) {
+ function AccidentTable({ groups = [] }) {
   if (!groups?.length) {
     return (
       <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6 text-slate-600">

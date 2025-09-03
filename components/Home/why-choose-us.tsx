@@ -8,7 +8,7 @@ export default function WhyChooseUs() {
         </div>
 
         <p className="text-[30px] lg:text-[40px] font-fredoka font-semibold text-center">
-          Why Choose <span className="text-primary">iVin? </span>
+          Why Choose <span className="text-primary">vinX? </span>
         </p>
       </div>
 
@@ -26,14 +26,14 @@ export default function WhyChooseUs() {
             <ol className="list-disc list-inside">
                 <li className="text-primary font-semibold text-[24px] mb-[12px]">History-Based Valuation</li>
             </ol>
-           <p className="font-[#1C1C1C]">Only iVin uses full historical data to offer accurate, personalized value assessments.</p>
+           <p className="font-[#1C1C1C]">Only vinX uses full historical data to offer accurate, personalized value assessments.</p>
            </div>
 
            <div>
             <ol className="list-disc list-inside">
                 <li className="text-primary font-semibold text-[24px] mb-[12px]">Trusted by Dealers Across the Network</li>
             </ol>
-           <p className="font-[#1C1C1C]">From independent sellers to franchise dealerships, iVin is the go-to platform for fast, reliable, and trustworthy vehicle background checks.</p>
+           <p className="font-[#1C1C1C]">From independent sellers to franchise dealerships, vinX is the go-to platform for fast, reliable, and trustworthy vehicle background checks.</p>
            </div>
         </div>
         <div className="flex-1  flex justify-end">

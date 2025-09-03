@@ -145,7 +145,7 @@ const Signup = () => {
 
   return (
   
-    <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen px-4 gap-10 bg-white lg:mx-20">
+    <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen px-4 gap-10  lg:mx-20">
       
       <div className="hidden w-[40%] lg:block md:block relative">
         <Image

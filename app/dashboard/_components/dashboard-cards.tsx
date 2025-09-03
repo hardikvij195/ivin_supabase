@@ -1,13 +1,15 @@
 // dashboard-cards.tsx
+import Link from "next/link";
 
 interface DashboardCardProps {
     icon: React.ReactNode;
     title: string;
     value: string | number;
     linkText?: string;
+    linkHref: string;
   }
   
-  export default function DashboardCard({ icon, title, value, linkText }: DashboardCardProps) {
+  export default function DashboardCard({ icon, title, value, linkText, linkHref }: DashboardCardProps) {
     return (
       <div className="px-6 py-5 bg-white flex-1 border border-[#EAEAEA] rounded-[8px] flex flex-col gap-4">
         <p className="font-medium text-[#1C1C1C] flex gap-4">{title}</p>
@@ -16,7 +18,7 @@ interface DashboardCardProps {
             {icon}
             <p className="font-semibold text-[24px] text-[#1C1C1C]">{value}</p>
           </div>
-          {linkText && <p className="text-primary font-semibold">{linkText}</p>}
+          <Link href={linkHref}>{linkText && <p className="text-primary font-semibold">{linkText}</p>}</Link>
         </div>
       </div>
     );

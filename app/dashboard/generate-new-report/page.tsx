@@ -5,14 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { supabaseBrowser } from "@/lib/supabaseBrowser";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useSearchParams } from "next/navigation"; // ✅ added
 
 import {
   Dialog,
@@ -31,12 +24,15 @@ interface ReportType {
 }
 
 export default function GenerateNewReport() {
+  const searchParams = useSearchParams();
+  const vinFromUrl = searchParams.get("vin") || ""; // ✅ read VIN from URL
+
   const [reportTypes, setReportTypes] = useState<ReportType[]>([]);
   const [selectedReport, setSelectedReport] = useState<string>("");
 
-  const [vin, setVin] = useState("");
+  const [vin, setVin] = useState(vinFromUrl); // ✅ init VIN from URL
   const [note, setNote] = useState("");
-  const [shareToWall, setShareToWall] = useState(false);
+  const [shareToWall, setShareToWall] = useState(true);
 
   // modal/flow
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -84,7 +80,8 @@ export default function GenerateNewReport() {
   const handleSearchClick = () => {
     setInlineMsg(null);
     if (!vin.trim()) return setInlineMsg("Please enter a VIN.");
-    if (!isValidVin(vin)) return setInlineMsg("Invalid VIN. It must be 17 characters (no I, O, Q).");
+    if (!isValidVin(vin))
+      return setInlineMsg("Invalid VIN. It must be 17 characters (no I, O, Q).");
     if (!Number.isFinite(selectedAmount) || selectedAmount <= 0)
       return setInlineMsg("Selected report has no valid price configured.");
     setOpenConfirm(true);
@@ -122,9 +119,6 @@ export default function GenerateNewReport() {
               status: "pending",
               report_type: finalReportType,
               amount: String(finalAmount),
-              // optional: note, share_to_wall if your table has them
-              // note,
-              // share_to_wall: shareToWall
             },
           ])
           .select("id")
@@ -134,7 +128,7 @@ export default function GenerateNewReport() {
         paymentId = inserted?.id;
       }
 
-      // 2) CHARGE WALLET (replace with your wallet impl)
+      // 2) CHARGE WALLET
       {
         const res = await fetch("/api/wallet/charge", {
           method: "POST",
@@ -148,7 +142,6 @@ export default function GenerateNewReport() {
         });
         const charge = await res.json();
         if (!res.ok || !charge?.success) {
-          // mark payment canceled
           if (paymentId) {
             await supabaseBrowser.from("payments").update({ status: "canceled" }).eq("id", paymentId);
           }
@@ -156,7 +149,6 @@ export default function GenerateNewReport() {
         }
         txId = charge?.txId;
 
-        // mark payment success + store txId if you track it
         if (paymentId) {
           await supabaseBrowser
             .from("payments")
@@ -176,7 +168,6 @@ export default function GenerateNewReport() {
         throw new Error(payload?.error || "Failed to create Carfax report.");
       }
 
-      // reportId from the Carfax URL
       const carfaxUrl = new URL(payload.reportUrl);
       const reportId = carfaxUrl.searchParams.get("id");
       if (!reportId) throw new Error("No report ID in Carfax URL.");
@@ -191,7 +182,7 @@ export default function GenerateNewReport() {
         console.warn("JSON fetch failed:", e);
       }
 
-      // 5) Build URLs & save carfax_reports
+      // 5) Save carfax_reports
       const original_pdf_url = `https://carfaxgo.com/carfax?id=${encodeURIComponent(reportId)}`;
       const vinx_pdf_url = `${window.location.origin}/report?id=${encodeURIComponent(reportId)}`;
 
@@ -201,7 +192,7 @@ export default function GenerateNewReport() {
           {
             user_id: user.id,
             vin: vinUpper,
-            report_url: original_pdf_url, // canonical view URL
+            report_url: original_pdf_url,
             data: dataJson ?? null,
             report_id: reportId,
             json_url,
@@ -209,13 +200,12 @@ export default function GenerateNewReport() {
             vinx_pdf_url,
             report_type: finalReportType,
             amount: String(finalAmount),
-            add_wall: shareToWall, 
+            add_wall: shareToWall,
           },
         ]);
 
       if (insertErr) throw insertErr;
 
-      // 6) OPEN REPORT
       setOpenConfirm(false);
       window.open(vinx_pdf_url, "_blank");
     } catch (err: any) {
@@ -258,43 +248,9 @@ export default function GenerateNewReport() {
               className="bg-[#FAFAFA] px-4 py-2 border border-[#E4E4E4] focus:outline-primary rounded-full w-full"
               placeholder="e.g. 1HGCM82633A004352"
             />
-            
           </div>
           {inlineMsg && <div className="mt-3 text-sm text-slate-700">{inlineMsg}</div>}
         </div>
-
-        {/* Report type select */}
-        {/*<div className="mb-3">
-          <p className="text-[16px] font-medium mb-3">Select Report Type</p>
-          <Select value={selectedReport} onValueChange={setSelectedReport}>
-            <SelectTrigger className="w-full rounded-3xl bg-white border border-gray-200 px-4 py-3 text-left">
-              {selected ? (
-                <div className="flex w-full items-center justify-between">
-                  <span>{selected.report_name}</span>
-                  <span className="text-[#5E189D] font-semibold">
-                    {formatPrice(selected.amount ?? 20)}
-                  </span>
-                </div>
-              ) : (
-                <SelectValue placeholder="Choose the type of report" />
-              )}
-            </SelectTrigger>
-            <SelectContent className="bg-white rounded-[8px] border border-gray-200 shadow-md">
-              <SelectGroup>
-                {reportTypes.map((report) => (
-                  <SelectItem key={report.id} value={report.id}>
-                    <div className="flex w-full items-center justify-between">
-                      <span>{report.report_name}</span>
-                      <span className="text-[#5E189D] font-semibold">
-                        {formatPrice(report.amount)}
-                      </span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div> */}
 
         {/* Share toggle */}
         <div className="flex justify-between gap-2 mb-3">
@@ -336,14 +292,12 @@ export default function GenerateNewReport() {
         <DialogContent className="sm:max-w-[460px] bg-white">
           <DialogHeader>
             <DialogTitle>Confirm Charge</DialogTitle>
-           <DialogDescription>
-  <>
-    You&apos;re about to purchase{" "}
-    <b>{selected?.report_name || "Full Report"}</b> for VIN{" "}
-    <b>{vin.toUpperCase()}</b>.
-  </>
-</DialogDescription>
-
+            <DialogDescription>
+              <>
+                You&apos;re about to purchase <b>{selected?.report_name || "Full Report"}</b> for VIN{" "}
+                <b>{vin.toUpperCase()}</b>.
+              </>
+            </DialogDescription>
           </DialogHeader>
 
           <div className="mt-2 text-base">

@@ -49,7 +49,7 @@ export default function Tools() {
                 <p className="font-semibold text-[20px] text-center text-white mb-4"> {vehicleTool.title}</p>
                 <div className="w-18 h-1 mb-[12px] bg-white"></div>
                 <p className="max-w-68 text-[18px] mb-8 text-center">{vehicleTool.description}</p>
-                <button className="font-semibold font-fredoka border border-white px-6 sm:px-10 py-2 sm:py-4 rounded-full">{vehicleTool.actionText}</button>
+                {/*<button className="font-semibold font-fredoka border border-white px-6 sm:px-10 py-2 sm:py-4 rounded-full">{vehicleTool.actionText}</button>*/}
               </div>
             );
           })}

@@ -57,15 +57,15 @@ export default function Sidebar() {
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Detect viewport changes
+  
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 1023px)");
     const applyMQ = (mq: MediaQueryList | MediaQueryListEvent) => {
       const matches =
         "matches" in mq ? mq.matches : (mq as MediaQueryList).matches;
       setIsMobile(matches);
-      if (!matches) setCollapsed(false); // desktop → expanded
-      if (matches) setCollapsed(true); // mobile → collapsed
+      if (!matches) setCollapsed(false); 
+      if (matches) setCollapsed(true); 
     };
     applyMQ(mql);
     mql.addEventListener?.("change", applyMQ as any);
@@ -73,7 +73,7 @@ export default function Sidebar() {
     return () => mql.removeEventListener?.("change", applyMQ as any);
   }, []);
 
-  // Auto collapse when navigating on mobile
+  
   useEffect(() => {
     if (isMobile) setCollapsed(true);
   }, [pathname, isMobile]);
@@ -83,6 +83,9 @@ export default function Sidebar() {
       sessionStorage.removeItem("modal_shown");
       await supabaseBrowser.auth.signOut();
       dispatch(clearUser());
+       localStorage.removeItem("userFullName");
+    localStorage.removeItem("userAvatarUrl");
+    localStorage.removeItem("userRole");
       router.push("/");
     } catch (err) {
       console.error("Logout error:", err);
@@ -91,11 +94,11 @@ export default function Sidebar() {
 
   const showLabels = !collapsed;
   const baseWidth = collapsed ? "w-20" : "w-64";
-   const desktopWidth = collapsed ? "lg:w-20" : "lg:w-64";
+  const desktopWidth = collapsed ? "lg:w-20" : "lg:w-64";
 
   return (
     <>
-      {/* Overlay for mobile */}
+      
       {isMobile && !collapsed && (
         <div
           className="fixed inset-0 z-40 bg-black/30"
@@ -103,21 +106,20 @@ export default function Sidebar() {
         />
       )}
 
-     
-        <aside
-           className={cn(
-        isMobile && !collapsed
-          ? "fixed min-h-screen inset-y-0 left-0 top-16 z-50"
-          : "static",
-        "max-h-screen flex flex-col justify-between",
-        "border border-[#EAEAEA] bg-white shadow-md transition-[width] duration-300 ease-in-out",
-        "lg:rounded-[16px] rounded-lg lg:ml-5 lg:my-5",
-        baseWidth,
-        desktopWidth,
-        !mounted && "opacity-0"
-      )}
-        >
-            <div className="flex flex-col">
+      <aside
+        className={cn(
+          isMobile && !collapsed
+            ? "fixed min-h-screen inset-y-0 left-0 top-16 z-50"
+            : "static",
+          "max-h-screen flex flex-col justify-between",
+          "border border-[#EAEAEA] bg-white shadow-md transition-[width] duration-300 ease-in-out",
+          "lg:rounded-[16px] rounded-lg lg:ml-5 lg:my-5",
+          baseWidth,
+          desktopWidth,
+          !mounted && "opacity-0"
+        )}
+      >
+        <div className="flex flex-col">
           <div className="flex items-center justify-end px-2 py-3">
             <button
               type="button"
@@ -133,7 +135,6 @@ export default function Sidebar() {
             </button>
           </div>
 
-          {/* Nav links */}
           <ul className="flex-1 space-y-1 px-2 py-2">
             {navItems.map((item, i) => {
               const isActive = pathname === item.href;
@@ -150,20 +151,18 @@ export default function Sidebar() {
               );
             })}
           </ul>
-          </div>
+        </div>
 
-  
-          <div className="p-2 border-t border-gray-200">
-            <SidebarItem
-              icon={LogOut}
-              title="Log out"
-              isActive={false}
-              showLabels={showLabels}
-              onClick={handleLogout}
-            />
-          </div>
-        </aside>
-
+        <div className="p-2 border-t border-gray-200">
+          <SidebarItem
+            icon={LogOut}
+            title="Log out"
+            isActive={false}
+            showLabels={showLabels}
+            onClick={handleLogout}
+          />
+        </div>
+      </aside>
     </>
   );
 }

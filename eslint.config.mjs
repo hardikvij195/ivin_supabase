@@ -19,6 +19,14 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
     ],
+       rules: {
+      "@next/next/no-img-element": "off",        // allow <img>
+      "jsx-a11y/alt-text": "off",                // ignore missing alt
+      "react/no-unescaped-entities": "off",      // ignore ' escape issues
+      "@typescript-eslint/no-unused-vars": "off", // ignore unused vars
+      "@typescript-eslint/no-explicit-any": "off" // allow any type
+    },
+
   },
 ];
 

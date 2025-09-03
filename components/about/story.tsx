@@ -11,7 +11,7 @@ export default function Story() {
       <div className="flex-1">
         <p className="text-[30px] lg:text-[40px]  font-semibold font-fredoka mb-6">Our Story</p>
         <p className="text-[18px] mb-5">
-          iVin was founded with a clear goal: to make vehicle information
+          vinX was founded with a clear goal: to make vehicle information
           accessible, accurate, and easy to understand for everyday drivers,
           sellers, and dealers alike.
         </p>
@@ -24,7 +24,7 @@ export default function Story() {
           reliability, and future costs.
         </p>
         <p className="text-[18px]">
-          Today, iVin offers a full suite of products designed to protect buyers
+          Today, vinX offers a full suite of products designed to protect buyers
           and empower sellers — whether you're shopping for your first car,
           trading in, or running a dealership.
         </p>

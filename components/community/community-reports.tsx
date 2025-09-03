@@ -4,12 +4,12 @@ import CommunityReportsToolbar from "./community-report-toolbar";
 export default function CommunityReports() {
   return (
     <div>
-      <div className="layout xl:px-20 px-8 xl:pt-14 pt-8">
-        <p className="font-fredoka font-semibold text-[30px] lg:text-[40px] text-[#1C1C1C] mb-5 text-center">
+      <div className="layout xl:px-20 px-8 xl:pt-10 pt-8">
+        <p className="font-fredoka font-semibold text-[30px] lg:text-[32px] text-[#1C1C1C] mb-5 text-center">
           The <span className="text-primary">Wall</span>
         </p>
-        <p className="text-[18px] text-center max-w-233 m-auto text-[#4D4D4D] mb-10">
-          Discover recent vehicle history checks and insights shared by the iVin
+        <p className="text-[16px] text-center max-w-233 m-auto text-[#4D4D4D] mb-5">
+          Discover recent vehicle history checks and insights shared by the vinX
           community. Learn from others and contribute your own observations.
         </p>
       </div>

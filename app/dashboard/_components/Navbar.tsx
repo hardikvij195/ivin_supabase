@@ -10,9 +10,9 @@ import { supabaseBrowser } from "@/lib/supabaseBrowser"; // ✅ adjust path if n
 const navbarItems = [
   { name: "Home", href: "/" },
   { name: "Features", href: "/features" },
-  { name: "Blog", href: "/blog" },
+  //{ name: "Blog", href: "/blog" },
   { name: "FAQ", href: "/faq" },
-  { name: "The wall", href: "/community" },
+  { name: "The Wall", href: "/community" },
   { name: "About Us", href: "/about-us" },
 ];
 

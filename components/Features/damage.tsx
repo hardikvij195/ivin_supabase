@@ -1,4 +1,27 @@
+"use client"
+import { useRouter } from "next/navigation";
+import { supabaseBrowser } from "@/lib/supabaseBrowser"; 
+import { useState } from "react";
+
+
 export default function Damage() {
+   const router = useRouter();
+  const [vin, setVin] = useState("");
+
+  const handleGetReports = async () => {
+      const {
+        data: { user },
+      } = await supabaseBrowser.auth.getUser();
+  
+      if (user) {
+        // pass VIN as query param
+        router.push(`/dashboard/generate-new-report`);
+      } else {
+        router.push("/dealer-login");
+      }
+    };
+  
+
     return (
       <div
         className="layout flex-col md:flex-row xl:px-20 px-8 xl:pt-27 pt-20 flex justify-between items-center gap-10 md:gap-20"
@@ -24,7 +47,7 @@ export default function Damage() {
             <li>Location and severity of impact</li>
             <li>Insurance claims & repair estimates</li>
           </ol>
-          <button className="text-[18px] sm:text-[20px] font-semibold font-fredoka px-5 sm:px-10 py-3 sm:py-5 bg-primary text-white rounded-full">
+          <button className="text-[18px] sm:text-[20px] font-semibold font-fredoka px-5 sm:px-10 py-3 sm:py-5 bg-primary text-white rounded-full cursor-pointer" onClick={handleGetReports}>
             Check for Past Damage
           </button>
         </div>

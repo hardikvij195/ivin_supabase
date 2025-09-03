@@ -60,3 +60,7 @@ body {
 .custom-scrollbar::-webkit-scrollbar { width: 8px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,.1); border-radius: 999px; }
 .custom-scrollbar { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,.1) transparent; }
+::selection {
+  background-color: var(--color-primary); /* your purple */
+  color: white; /* make text white when selected */
+}

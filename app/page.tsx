@@ -11,13 +11,13 @@ import { Footer } from "@/components/Footer";
 const page = () => {
   return (
     <div>
-         <Header />
+      <Header />
       <Hero />
       <Features />
       <Tools />
       <WhyChooseUs />
       <CustomerSupport />
-      <Partnership />
+      {/*<Partnership />*/}
       <Footer />
     </div>
   );

@@ -1,3 +1,4 @@
+import Link from "next/link";
 export default function CustomerSupport() {
     return (
       <div className="layout xl:px-20 px-8 xl:pt-18 pt-12  text-white ">
@@ -6,11 +7,11 @@ export default function CustomerSupport() {
         <div className="h-fit">
             <p className="mb-6 font-fredoka font-semibold text-[30px] lg:text-[40px]">Customer Support</p>
             <p className="text-[20px] max-w-136 mb-10">Need help? We're here for you. Our support team is ready to assist you anytime.</p>
-            <button className="font-semibold border font-fredoka bg-white text-primary border-primary px-6 py-4 flex gap-[10px] rounded-full shadow-[0px_4px_4px_0px_#00000040]"> <img src={"/home/whatsapp.svg"}></img>  <p> Chat via WhatsApp</p></button>
+            <Link href="https://wa.me/918588099741" target="_blank" className="font-semibold border font-fredoka bg-white text-primary border-primary px-6 py-4 w-64 flex gap-[10px] rounded-full shadow-[0px_4px_4px_0px_#00000040]"> <img src={"/home/whatsapp.svg"}></img>  <p> Chat via WhatsApp</p></Link>
         </div>
          
          <div className="hidden md:block">
-            <img src={"/home/support.svg"} alt="support"/>
+           <img src={"/home/support.svg"} alt="support"/>
          </div>
          </div>
       </div>
