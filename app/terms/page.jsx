@@ -8,7 +8,6 @@ const TermsConditions = () => {
     <div>
       <Header />
 
-      {/* Banner */}
       <div className="bg-[url('/shared/banner.png')] bg-cover bg-center text-white py-16 text-center">
         <h1 className="text-3xl lg:text-4xl font-bold">Terms & Conditions</h1>
       </div>
