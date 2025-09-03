@@ -141,10 +141,9 @@ export default function ReportsOverviewPage() {
     });
   }, [filteredReports]);
 
-  // ✅ reusable collapsible table
   const CollapsibleTable = ({ title, rows, open, toggle }: { title: string; rows: AggregatedRow[]; open: boolean; toggle: () => void }) => (
     <div className="mb-4">
-      {/* Header Row */}
+
       <div
         onClick={toggle}
         className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 cursor-pointer hover:bg-purple-100"
@@ -156,7 +155,6 @@ export default function ReportsOverviewPage() {
         {open ? <ChevronUp className="w-5 h-5 text-gray-600" /> : <ChevronDown className="w-5 h-5 text-gray-600" />}
       </div>
 
-      {/* Table */}
       {open && (
         <div className="overflow-x-auto rounded border border-gray-200 bg-white mt-2">
           <table className="min-w-[900px] w-full text-sm">
@@ -184,7 +182,7 @@ export default function ReportsOverviewPage() {
                 </tr>
               ) : (
                 rows.map((row, i) => (
-                  <tr key={i} className="border-t hover:bg-gray-50 transition-colors">
+                  <tr key={i} className="border-t border-gray-200 hover:bg-gray-50 transition-colors">
                     <td className="p-3">{row.period}</td>
                     <td className="p-3">{row.total_reports}</td>
                     <td className="p-3">{row.top_report_type}</td>

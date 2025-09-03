@@ -11,7 +11,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, XCircle } from "lucide-react";
+import Loader from "../../../../(auth)/callback/loading";
 
 export default function PaypalReturnContent() {
   const sp = useSearchParams();
@@ -19,14 +20,15 @@ export default function PaypalReturnContent() {
 
   const [message, setMessage] = useState("Processing your payment…");
   const [ok, setOk] = useState<boolean | null>(null);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [amount, setAmount] = useState<number | null>(null);
 
   useEffect(() => {
-    const token = sp.get("token"); // PayPal sends ?token=<orderId>
+    const token = sp.get("token");
     if (!token) {
       setMessage("Missing PayPal token.");
       setOk(false);
+      setShowModal(true);
       return;
     }
 
@@ -61,46 +63,68 @@ export default function PaypalReturnContent() {
 
         setOk(true);
         setMessage("Payment successful! Your wallet has been updated.");
-        setShowSuccessModal(true);
+        setShowModal(true);
       } catch (e: any) {
         console.error(e);
         setOk(false);
         setMessage(e?.message || "Payment capture failed.");
+        setShowModal(true);
       }
     })();
   }, [sp]);
 
+  const handleClose = () => {
+    setShowModal(false);
+    router.push("/dashboard/payments/wallet");
+  };
+
   return (
     <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-4">PayPal</h1>
-      <p className={`mb-6 ${ok === false ? "text-red-600" : "text-gray-800"}`}>
-        {message}
-      </p>
+      <Loader />
 
-      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-        <div className="fixed inset-0 z-40 bg-white/30 backdrop-blur-md" />
+      <Dialog open={showModal} onOpenChange={handleClose}>
         <DialogContent className="sm:max-w-[420px] bg-white z-50">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <CheckCircle2 className="h-6 w-6 text-green-600" />
-              Payment successful
+              {ok ? (
+                <>
+                  <CheckCircle2 className="h-6 w-6 text-green-600" />
+                  Payment successful
+                </>
+              ) : (
+                <>
+                  <XCircle className="h-6 w-6 text-red-600" />
+                  Payment failed
+                </>
+              )}
             </DialogTitle>
           </DialogHeader>
 
           <div className="mt-2 text-base">
-            {amount != null ? (
-              <>We received <b>${amount.toFixed(2)}</b>. Your wallet has been updated.</>
+            {ok ? (
+              amount != null ? (
+                <>
+                  We received <b>${amount.toFixed(2)}</b>. Your wallet has been
+                  updated.
+                </>
+              ) : (
+                <>Your wallet has been updated.</>
+              )
             ) : (
-              <>Your wallet has been updated.</>
+              <>{message}</>
             )}
           </div>
 
           <DialogFooter className="mt-6">
             <Button
-              className="bg-purple-700 hover:bg-purple-800 text-white"
-              onClick={() => router.push("/dashboard/payments/wallet")}
+              className={`${
+                ok
+                  ? "bg-purple-700 hover:bg-purple-800"
+                  : "bg-red-600 hover:bg-red-700"
+              } text-white`}
+              onClick={handleClose}
             >
-              Okay!
+              {ok ? "Okay!" : "Go back"}
             </Button>
           </DialogFooter>
         </DialogContent>
