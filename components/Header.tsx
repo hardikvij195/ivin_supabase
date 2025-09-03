@@ -19,6 +19,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [fullName, setFullName] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true); // 👈 new
   const router = useRouter();
 
   useEffect(() => {
@@ -32,27 +33,25 @@ export default function Navbar() {
         data: { session },
       } = await supabaseBrowser.auth.getSession();
 
-      if (!session?.user) return;
+      if (session?.user) {
+        const { data: profile, error } = await supabaseBrowser
+          .from("profiles")
+          .select("full_name, avatar_url")
+          .eq("id", session.user.id)
+          .maybeSingle();
 
-      const { data: profile, error } = await supabaseBrowser
-        .from("profiles")
-        .select("full_name, avatar_url")
-        .eq("id", session.user.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error("Error fetching profile:", error);
-        return;
+        if (!error && profile) {
+          if (profile.full_name) {
+            setFullName(profile.full_name);
+            localStorage.setItem("userFullName", profile.full_name);
+          }
+          if (profile.avatar_url) {
+            setAvatarUrl(profile.avatar_url);
+            localStorage.setItem("userAvatarUrl", profile.avatar_url);
+          }
+        }
       }
-
-      if (profile?.full_name) {
-        setFullName(profile.full_name);
-        localStorage.setItem("userFullName", profile.full_name);
-      }
-      if (profile?.avatar_url) {
-        setAvatarUrl(profile.avatar_url);
-        localStorage.setItem("userAvatarUrl", profile.avatar_url);
-      }
+      setLoading(false); // 👈 stop loading after fetch
     };
 
     fetchProfile();
@@ -87,32 +86,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* {fullName ? (
-            <div className="ml-auto flex items-center gap-2">
-              {avatarUrl ? (
-                <Image
-                  src={avatarUrl}
-                  alt="user avatar"
-                  width={32}
-                  height={32}
-                  className="rounded-full border border-white object-cover"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center border border-white">
-                  <User className="w-5 h-5 text-white" />
-                </div>
-              )}
-              <span className="font-semibold">{fullName}</span>
-            </div>
-          ) : (
-            <Link
-              href="/dealer-login"
-              className="px-4 py-2 bg-white text-primary rounded-3xl font-bold"
-            >
-              Get Started
-            </Link>
-          )} */}
-          {!fullName && (
+          {!loading && !fullName && ( // 👈 show only after loading check
             <Link href="/dealer-login" className="underline ml-auto">
               Dealer Login
             </Link>
@@ -139,33 +113,7 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {/*  {fullName ? (
-            <div className="flex items-center gap-2 mt-2">
-              {avatarUrl ? (
-                <Image
-                  src={avatarUrl}
-                  alt="user avatar"
-                  width={32}
-                  height={32}
-                  className="rounded-full border border-white"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-bold">
-                  {fullName.charAt(0).toUpperCase()}
-                </div>
-              )}
-              <span className="font-semibold">{fullName}</span>
-            </div>
-          ) : (
-            <Link
-              href="/dealer-login"
-              onClick={() => setIsOpen(false)}
-              className="px-4 py-2 bg-white text-primary rounded-3xl font-bold mt-2"
-            >
-              Get Started
-            </Link>
-          )} */}
-          {!fullName && (
+          {!loading && !fullName && ( // 👈 also here
             <Link
               href="/dealer-login"
               className="underline"
