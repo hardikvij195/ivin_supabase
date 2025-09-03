@@ -87,7 +87,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          {fullName ? (
+          {/* {fullName ? (
             <div className="ml-auto flex items-center gap-2">
               {avatarUrl ? (
                 <Image
@@ -110,6 +110,11 @@ export default function Navbar() {
               className="px-4 py-2 bg-white text-primary rounded-3xl font-bold"
             >
               Get Started
+            </Link>
+          )} */}
+          {!fullName && (
+            <Link href="/dealer-login" className="underline ml-auto">
+              Dealer Login
             </Link>
           )}
         </nav>
@@ -134,7 +139,7 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {fullName ? (
+          {/*  {fullName ? (
             <div className="flex items-center gap-2 mt-2">
               {avatarUrl ? (
                 <Image
@@ -158,6 +163,15 @@ export default function Navbar() {
               className="px-4 py-2 bg-white text-primary rounded-3xl font-bold mt-2"
             >
               Get Started
+            </Link>
+          )} */}
+          {!fullName && (
+            <Link
+              href="/dealer-login"
+              className="underline"
+              onClick={() => setIsOpen(false)}
+            >
+              Dealer Login
             </Link>
           )}
         </div>

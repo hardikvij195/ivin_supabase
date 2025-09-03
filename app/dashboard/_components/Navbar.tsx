@@ -81,8 +81,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Right side: Avatar + full_name OR Dealer Login */}
-          {fullName ? (
+          {/* {fullName ? (
             <div className="ml-auto flex items-center gap-2">
               {avatarUrl ? (
                 <Image
@@ -100,6 +99,11 @@ export default function Navbar() {
               <span className="font-semibold">{fullName}</span>
             </div>
           ) : (
+            <Link href="/dealer-login" className="underline ml-auto">
+              Dealer Login
+            </Link>
+          )} */}
+          {!fullName && (
             <Link href="/dealer-login" className="underline ml-auto">
               Dealer Login
             </Link>
@@ -128,8 +132,7 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {/* Mobile: Avatar + fullname or Dealer Login */}
-          {fullName ? (
+          {/* {fullName ? (
             <div className="flex items-center gap-2">
               {avatarUrl ? (
                 <Image
@@ -147,6 +150,16 @@ export default function Navbar() {
               <span className="font-semibold">{fullName}</span>
             </div>
           ) : (
+            <Link
+              href="/dealer-login"
+              className="underline"
+              onClick={() => setIsOpen(false)}
+            >
+              Dealer Login
+            </Link>
+          )} 
+            */}
+          {!fullName && (
             <Link
               href="/dealer-login"
               className="underline"
