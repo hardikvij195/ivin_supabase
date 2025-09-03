@@ -183,7 +183,7 @@ export default function WalletPage() {
         <div className="rounded-xl border border-gray-200 bg-white p-5">
           <div className="text-sm text-gray-500 mb-1">Quick Add</div>
           <div className="flex gap-2">
-            {[10, 20, 50].map((v) => (
+            {[20, 50, 100].map((v) => (
               <Button
                 key={v}
                 variant="outline"
