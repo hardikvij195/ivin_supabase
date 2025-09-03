@@ -87,13 +87,13 @@ export default function Navbar() {
               {avatarUrl ? (
                 <Image
                   src={avatarUrl}
-                  alt="user avatar"
+                  alt=""
                   width={32}
                   height={32}
                   className="rounded-full border border-white"
                 />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-bold">
+                <div className="w-[32px] h-[32px] rounded-full bg-gray-300 flex items-center justify-center text-sm font-bold">
                   {fullName.charAt(0).toUpperCase()}
                 </div>
               )}

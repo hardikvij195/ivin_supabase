@@ -29,7 +29,7 @@ const Signin = () => {
 
       if (data.user) {
         console.log("User already logged in:", data.user);
-        router.replace("/dashboard");
+        router.push("/callback");
       } else {
         setLoading(false);
       }
