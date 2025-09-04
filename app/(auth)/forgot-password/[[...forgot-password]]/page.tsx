@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Bot } from "lucide-react";
 import Header from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 
 const ForgotPassword = () => {
@@ -60,6 +61,8 @@ const ForgotPassword = () => {
   };
 
   return (
+    <>
+    <Header/>
     <div className="flex gap-10 justify-center items-center min-h-screen ">
    
         <div className="hidden w-[35%] lg:block md:block relative">
@@ -68,7 +71,7 @@ const ForgotPassword = () => {
         alt="forgot password"
            width={450}
           height={800} // ← Increased height here
-          className="h-[550px] w-[100%] object-cover rounded-md shadow-md"
+          className="h-[600px] w-[100%] object-cover rounded-md shadow-md"
           priority
       />
       </div>
@@ -128,6 +131,8 @@ const ForgotPassword = () => {
         </div>
       </div>
     </div>
+    <Footer />
+    </>
   );
 };
 

@@ -6,6 +6,7 @@ import { supabaseBrowser } from "@/lib/supabaseBrowser";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import Header from "@/components/Header";
 import Link from "next/link";
+import { Footer } from "@/components/Footer";
 
 const Signin = () => {
   const router = useRouter();
@@ -115,6 +116,8 @@ const Signin = () => {
   }
 
   return (
+    <>
+    <Header />
    
     <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen px-4 gap-10  lg:mx-20">
      
@@ -125,7 +128,7 @@ const Signin = () => {
           alt="signin Image"
           width={480}
           height={800}
-          className="h-[550px] w-[100%] object-cover rounded-md shadow-md"
+          className="h-[600px] w-[100%] object-cover rounded-md shadow-md"
           priority
         />
        
@@ -240,6 +243,8 @@ const Signin = () => {
         </div>
       </div>
     </div>
+    <Footer />
+    </>
 
   );
 };

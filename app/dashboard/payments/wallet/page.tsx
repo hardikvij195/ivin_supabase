@@ -33,7 +33,6 @@ type Txn = {
   balance_after?: number | string | null;
 };
 
-// normalize status for display
 const normalizeStatus = (s: string) => {
   const v = (s || "").toLowerCase();
   if (["failed", "rejected", "declined"].includes(v)) return "Rejected";
@@ -105,44 +104,48 @@ export default function WalletPage() {
   }, []);
 
   async function onTopup() {
-  setTopupError(null);
-  setTopupBusy(true);
-  try {
-    const amt = Number(topupAmount);
-    if (!Number.isFinite(amt) || amt <= 0) throw new Error("Enter a valid amount.");
+    setTopupError(null);
+    setTopupBusy(true);
+    try {
+      const amt = Math.floor(Number(topupAmount));
+      if (!Number.isFinite(amt)) throw new Error("Enter a valid amount.");
+      if (amt < 20) throw new Error("Minimum top-up is $20.");
 
-    const origin = window.location.origin;
-    const returnUrl = `${origin}/dashboard/payments/wallet/return`;
-    const cancelUrl = `${origin}/dashboard/payments/wallet`;
+      const origin = window.location.origin;
+      const returnUrl = `${origin}/dashboard/payments/wallet/return`;
+      const cancelUrl = `${origin}/dashboard/payments/wallet`;
 
-    // 1) Ask backend to create the PayPal order for this amount
-    const res = await fetch("/api/paypal/create-order", {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: amt, returnUrl, cancelUrl }),
-    });
-    const json = await res.json();
-    if (!res.ok || !json?.approveUrl) {
-      throw new Error(json?.error || "Could not create PayPal order.");
+      const res = await fetch("/api/paypal/create-order", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: amt, returnUrl, cancelUrl }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json?.approveUrl) {
+        throw new Error(json?.error || "Could not create PayPal order.");
+      }
+
+      window.location.href = json.approveUrl;
+    } catch (e: any) {
+      console.error(e);
+      setTopupError(e?.message || "Could not start PayPal checkout.");
+    } finally {
+      setTopupBusy(false);
     }
-
-    // 2) Redirect the user to PayPal approval page
-    window.location.href = json.approveUrl;
-    // NOTE: After approval, PayPal will redirect the user to returnUrl with ?token=<orderId>
-    // Our return page will capture it and credit the wallet.
-  } catch (e: any) {
-    console.error(e);
-    setTopupError(e?.message || "Could not start PayPal checkout.");
-  } finally {
-    setTopupBusy(false);
   }
-}
 
+  const minAmount = 20;
+  const amountNum = Number(topupAmount);
+  const amountInvalid =
+    !Number.isFinite(amountNum) || amountNum < minAmount;
 
   return (
     <div className="lg:max-w-full md:max-w-full max-w-[320px]">
-      <Link href='/dashboard/payments'><MoveLeft  className="w-5 h-5 my-5 text-gray-600 "/></Link>
+      <Link href="/dashboard/payments">
+        <MoveLeft className="w-5 h-5 my-5 text-gray-600 " />
+      </Link>
+
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Wallet</h1>
         <Button
@@ -259,12 +262,11 @@ export default function WalletPage() {
                     <td className={`p-3 capitalize ${statusClass}`}>
                       {normalizeStatus(t.status)}
                     </td>
-                   
                     <td className="p-3 font-mono">
                       {t.tx_id ? `${t.tx_id.slice(0, 8)}…` : "—"}
                     </td>
                     <td className="p-3">{t.note || "—"}</td>
-                     <td className="p-3">
+                    <td className="p-3">
                       {t.balance_after != null
                         ? `$${Number(t.balance_after).toFixed(2)}`
                         : "—"}
@@ -288,13 +290,26 @@ export default function WalletPage() {
           </DialogHeader>
 
           <div className="space-y-3">
-            <label className="text-sm text-gray-700">Amount (USD)</label>
+            <label className="text-sm text-gray-700">
+              Amount (USD) — minimum ${minAmount}
+            </label>
             <Input
               type="number"
-              min={1}
+              min={minAmount}
               step={1}
               value={topupAmount}
-              onChange={(e) => setTopupAmount(e.target.value)}
+              onChange={(e) => {
+                setTopupAmount(e.target.value);
+                setTopupError(null);
+              }}
+              onBlur={(e) => {
+                const n = Math.floor(Number(e.target.value));
+                if (!Number.isFinite(n)) return;
+                if (n < minAmount) {
+                  setTopupAmount(String(minAmount));
+                  setTopupError(`Minimum top-up is $${minAmount}.`);
+                }
+              }}
             />
             {topupError && (
               <div className="text-sm text-red-600">{topupError}</div>
@@ -310,7 +325,8 @@ export default function WalletPage() {
             <Button
               onClick={onTopup}
               className="bg-purple-700 hover:bg-purple-800 text-white"
-              disabled={topupBusy}
+              disabled={topupBusy || amountInvalid}
+              title={amountInvalid ? `Minimum top-up is $${minAmount}` : undefined}
             >
               {topupBusy ? "Processing…" : "Add cash"}
             </Button>

@@ -19,6 +19,7 @@ import { Loader2, Bot } from "lucide-react";
 import PasswordInput from "@/components/ui/password-input"; 
 import { supabaseBrowser } from "@/lib/supabaseBrowser";
 import Header from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 // Form validation schemas
 const signUpSchema = z
@@ -144,7 +145,8 @@ const Signup = () => {
   };
 
   return (
-  
+    <>
+   <Header />
     <div className="flex flex-col lg:flex-row items-center justify-center min-h-screen px-4 gap-10  lg:mx-20">
       
       <div className="hidden w-[40%] lg:block md:block relative">
@@ -153,7 +155,7 @@ const Signup = () => {
           alt="signup Image"
           width={450}
           height={800} // ← Increased height here
-          className="h-[550px] w-[100%] object-cover rounded-md shadow-md"
+          className="h-[600px] w-[100%] object-cover rounded-md shadow-md"
           priority
         />
       </div>
@@ -317,6 +319,8 @@ const Signup = () => {
         )}
       </div>
     </div>
+    <Footer />
+    </>
 
   );
 };

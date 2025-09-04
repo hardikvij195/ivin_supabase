@@ -12,6 +12,7 @@ const baseItems = [
   { name: "Features", href: "/features" },
   { name: "FAQ", href: "/faq" },
   { name: "The Wall", href: "/community" },
+  { name: "Contact Us", href: "/contact-us" },
   { name: "About Us", href: "/about-us" },
 ];
 
@@ -87,8 +88,8 @@ export default function Navbar() {
           </div>
 
           {!loading && !fullName && ( // 👈 show only after loading check
-            <Link href="/dealer-login" className="underline ml-auto">
-              Dealer Login
+            <Link href="/dealer-login" className="bg-white text-primary px-4 py-2 rounded-3xl font-semibold">
+            Get Started
             </Link>
           )}
         </nav>
@@ -102,7 +103,7 @@ export default function Navbar() {
       </div>
 
       {isOpen && (
-        <div className="md:hidden flex flex-col gap-4 px-4 pb-6">
+        <div className="md:hidden flex flex-col justify-center items-center gap-4 px-4 pb-6">
           {itemsToShow.map((item) => (
             <Link
               key={item.name}
@@ -116,10 +117,10 @@ export default function Navbar() {
           {!loading && !fullName && ( // 👈 also here
             <Link
               href="/dealer-login"
-              className="underline"
+             className="bg-white text-primary px-4 py-2 rounded-3xl font-semibold"
               onClick={() => setIsOpen(false)}
             >
-              Dealer Login
+             Get Started
             </Link>
           )}
         </div>

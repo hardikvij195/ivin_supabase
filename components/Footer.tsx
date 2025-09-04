@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import FloatingActionButton from '../components/FloatingActionButton'
 
 export function Footer() {
   const router = useRouter();
@@ -61,6 +62,7 @@ export function Footer() {
             {/*<button className="p-2 rounded-md  bg-[#DFC3EE]">
               <img src={"/footer/mail.svg"} alt="mail" />
             </button>*/}
+                 <FloatingActionButton />
           </div>
         </div>
       </div>
