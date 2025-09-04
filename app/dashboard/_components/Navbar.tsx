@@ -103,11 +103,7 @@ export default function Navbar() {
               Dealer Login
             </Link>
           )} */}
-          {!fullName && (
-            <Link href="/dealer-login" className="underline ml-auto">
-              Dealer Login
-            </Link>
-          )}
+         
         </nav>
 
         {/* Mobile Menu Toggle */}
