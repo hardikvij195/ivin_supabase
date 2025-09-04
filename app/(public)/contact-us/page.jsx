@@ -1,8 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import Header from "../../components/Header";
-import { Footer } from "../../components/Footer";
+
 
 export default function ContactUs() {
   const {
@@ -20,7 +19,7 @@ export default function ContactUs() {
 
   return (
     <div>
-      <Header />
+   
       {/* Banner */}
       <div className="bg-[url('/shared/banner.png')] font-fredoka font-semibold text-[30px] lg:text-[40px] text-center bg-cover bg-center text-white flex items-center justify-center h-53">
         <h1 className="text-3xl lg:text-4xl font-bold">Contact Us</h1>
@@ -105,7 +104,7 @@ export default function ContactUs() {
           </div>
         </form>
       </div>
-      <Footer />
+
     </div>
   );
 }

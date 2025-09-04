@@ -8,12 +8,12 @@ import Header from "@/components/Header"
 export default function Page() {
   return (
     <>
-    <Header />
+
       <Hero />
       <Story/>
       <MissionValues/>
       {/*<PeoplePurpose/>*/}
-      <Footer />
+   
 
     </>
   );

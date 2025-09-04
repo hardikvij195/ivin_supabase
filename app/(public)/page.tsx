@@ -11,14 +11,14 @@ import { Footer } from "@/components/Footer";
 const page = () => {
   return (
     <div>
-      <Header />
+   
       <Hero />
       <Features />
       <Tools />
       <WhyChooseUs />
       <CustomerSupport />
       {/*<Partnership />*/}
-      <Footer />
+   
     </div>
   );
 };

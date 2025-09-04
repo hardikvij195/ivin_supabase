@@ -7,10 +7,10 @@ const page = () => {
   return (
     <div>
 
-         <Header />
+    
   
         <FAQ />
-        <Footer />
+    
  
     </div>
   )
