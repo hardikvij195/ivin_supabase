@@ -1,7 +1,8 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-
+import { supabaseBrowser } from "@/lib/supabaseBrowser";
+import { toast } from "sonner"; // ✅ Sonner toast
 
 export default function ContactUs() {
   const {
@@ -12,14 +13,34 @@ export default function ContactUs() {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data);
-    reset();
-    alert("Message sent successfully!");
+    try {
+      const { error } = await supabaseBrowser.from("contact_us_messages").insert([
+        {
+          name: data.name ?? null,
+          email: data.email ?? null,
+          message: data.message ?? null,
+        },
+      ]);
+
+      if (error) {
+        console.error("Supabase error inserting contact message:", error);
+        throw error;
+      }
+
+      reset();
+
+      // ✅ Success toast
+      toast.success("Message sent successfully!");
+    } catch (err) {
+      console.error("Failed to send message:", err);
+
+      // ❌ Error toast
+      toast.error("Failed to send message. Please try again later.");
+    }
   };
 
   return (
     <div>
-   
       {/* Banner */}
       <div className="bg-[url('/shared/banner.png')] font-fredoka font-semibold text-[30px] lg:text-[40px] text-center bg-cover bg-center text-white flex items-center justify-center h-53">
         <h1 className="text-3xl lg:text-4xl font-bold">Contact Us</h1>
@@ -37,9 +58,7 @@ export default function ContactUs() {
           {/* Name & Email */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block mb-2 text-sm font-medium">
-                Your Name*
-              </label>
+              <label className="block mb-2 text-sm font-medium">Your Name*</label>
               <input
                 type="text"
                 placeholder="e.g. John Doe"
@@ -47,16 +66,14 @@ export default function ContactUs() {
                 className="w-full px-4 py-3 rounded-full border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.name && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.name.message}
-                </p>
+                <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>
               )}
             </div>
             <div>
               <label className="block mb-2 text-sm font-medium">Email*</label>
               <input
                 type="email"
-                placeholder="e.g. johankevingmail.com"
+                placeholder="e.g. john@kevin.com"
                 {...register("email", {
                   required: "Email is required",
                   pattern: {
@@ -67,18 +84,14 @@ export default function ContactUs() {
                 className="w-full px-4 py-3 rounded-full border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {errors.email && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.email.message}
-                </p>
+                <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
               )}
             </div>
           </div>
 
           {/* Message */}
           <div>
-            <label className="block mb-2 text-sm font-medium">
-              Your Message*
-            </label>
+            <label className="block mb-2 text-sm font-medium">Your Message*</label>
             <textarea
               rows={5}
               placeholder="Leave us a message..."
@@ -86,9 +99,7 @@ export default function ContactUs() {
               className="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
             />
             {errors.message && (
-              <p className="text-sm text-red-500 mt-1">
-                {errors.message.message}
-              </p>
+              <p className="text-sm text-red-500 mt-1">{errors.message.message}</p>
             )}
           </div>
 
@@ -104,7 +115,6 @@ export default function ContactUs() {
           </div>
         </form>
       </div>
-
     </div>
   );
 }
